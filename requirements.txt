@@ -1,0 +1,8 @@
+Flask==2.2.2
+redshift_connector==2.0.909
+sqlalchemy-redshift==0.8.12
+pandas==1.5.2
+pytz==2022.7.1
+sendgrid==6.9.7
+requests==2.28.2
+gunicorn==20.1.0
