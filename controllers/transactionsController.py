@@ -11,6 +11,10 @@ import pandas as pd
 from models.transactions import Transaction
 from flask import jsonify
 from flask import request
+import time
+import sib_api_v3_sdk
+from sib_api_v3_sdk.rest import ApiException
+from pprint import pprint
 
 
 transaction = Transaction()
@@ -66,18 +70,37 @@ def send_mail(data, email):
         f.write(html_content)
     try:
         pass
-        #sg = sendgrid.SendGridAPIClient(api_key='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')    
-        sg = sendgrid.SendGridAPIClient(api_key='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') #MUMBii mail
-        from_email=Email('resort@mumbii.com')
-        to_emails=[To('urielrdzg10@gmail.com'),To(email)]
-        subject='Financial balance'
-        #content = Content("text/plain", "Estado de cuenta " + " - " )
-        content = HtmlContent(html_content)
-        mail = Mail(from_email, to_emails, subject, content)
-        response = sg.client.mail.send.post(request_body=mail.get())
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        sib_api_v3_sdk.configuration.api_key['api-key'] = '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'
+        api_instance = sib_api_v3_sdk.EmailCampaignsApi()
+        # Define the campaign settings\
+        email_campaigns = sib_api_v3_sdk.CreateEmailCampaign(
+            name= "Campaign sent via the API",
+            subject= "My subject",
+            sender= { "name": "From name", "email": "urielrdzg10@gmail.com"},
+            type= "classic",
+            # Content that will be sent\
+            html_content= "Congratulations! You successfully sent this example campaign via the Sendinblue API.",
+            # Select the recipients\
+            recipients= {"listIds": [2, 7]},
+            # Schedule the sending in one hour\
+            scheduled_at= "2023-01-27 09:21:00"
+        )
+        try:
+            api_response = api_instance.create_email_campaign(email_campaigns)
+            pprint(api_response)
+        except ApiException as e:
+            print("Exception when calling EmailCampaignsApi->create_email_campaign: %s\n" % e)
+        # from_email=Email('resort@mumbii.com')
+        # #from_email=Email('urielrdzg10@gmail.com')
+        # to_emails=[To('urielrdzg10@gmail.com'),To(email)]
+        # subject='Financial balance'
+        # #content = Content("text/plain", "Estado de cuenta " + " - " )
+        # content = HtmlContent(html_content)
+        # mail = Mail(from_email, to_emails, subject, content)
+        # response = sg.client.mail.send.post(request_body=mail.get())
+        # print(response.status_code)
+        # print(response.body)
+        # print(response.headers)
     except Exception as e:
         print(e)
 
